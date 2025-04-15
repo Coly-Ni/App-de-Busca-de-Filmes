@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/movie_bloc.dart';
 import '../bloc/event_movie.dart';
@@ -15,9 +16,25 @@ class TabSearch extends StatefulWidget {
 class _TabSearchState extends State<TabSearch> {
   final TextEditingController campoSearch = TextEditingController();
 
-  void searchMovies() {
+  void searchMovies() async {
     final term = campoSearch.text.trim();
     if (term.isNotEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Carrega histórico atual
+      List<String> historico = prefs.getStringList('searchs_recent') ?? [];
+
+      historico.remove(term);
+      historico.insert(0, term);
+
+      if (historico.length > 10) {
+        historico = historico.sublist(0, 10);
+      }
+
+      await prefs.setStringList('searchs_recent', historico);
+
+      if (!mounted) return;
+
       context.read<MovieBloc>().add(SearchMovies(term));
     }
   }
