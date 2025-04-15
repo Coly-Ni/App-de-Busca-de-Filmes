@@ -45,7 +45,7 @@ class _TabSearchState extends State<TabSearch> {
             builder: (context, state) {
               if (state is MovieInitial) {
                 return const Center(child: Text("Digite algo para pesquisar."));
-              } else if (state is MovieLoaded) {
+              } else if (state is MovieLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is MovieLoaded) {
                 final movies = state.movies;
@@ -61,7 +61,7 @@ class _TabSearchState extends State<TabSearch> {
                   },
                 );
               } else if (state is MovieError) {
-                return Center(child: Text("Error: ${state.message}"));
+                return Center(child: Text("Erro: ${state.message}"));
               } else {
                 return const SizedBox.shrink();
               }
